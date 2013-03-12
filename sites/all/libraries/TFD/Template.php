@@ -32,7 +32,7 @@ class TFD_Template extends Twig_Template {
     /**
      * This where the magic happens if the $object[$item] is an array
      * and is not a ArrayAccess object, the array is passed trough
-     * to the tfd_render function before returning.
+     * to the TFD_render function before returning.
      *
      * @see parent::getAttribute
      */

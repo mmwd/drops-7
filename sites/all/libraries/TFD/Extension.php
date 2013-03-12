@@ -9,7 +9,7 @@
 class TFD_Extension extends Twig_Extension {
 
   public function getNodeVisitors() {
-    theme()
+    theme();
     return array(new TFD_NodeVisitor());
   }
 
@@ -50,13 +50,13 @@ class TFD_Extension extends Twig_Extension {
   /* registers the drupal specific filters */
   public function getFilters() {
     $filters = array();
-    $filters['replace'] = new Twig_Filter_Function('tfd_str_replace');
-    $filters['re_replace'] = new Twig_Filter_Function('tfd_re_replace');
-    $filters['dump'] = new Twig_Filter_Function('tfd_dump', array('needs_environment' => TRUE));
-    $filters['defaults'] = new Twig_Filter_Function('tfd_defaults_filter');
+    $filters['replace'] = new Twig_Filter_Function('TFD_str_replace');
+    $filters['re_replace'] = new Twig_Filter_Function('TFD_re_replace');
+    $filters['dump'] = new Twig_Filter_Function('TFD_dump', array('needs_environment' => TRUE));
+    $filters['defaults'] = new Twig_Filter_Function('TFD_defaults_filter');
 
     $filters['size'] = new Twig_Filter_Function('format_size');
-    $filters['url'] = new Twig_Filter_Function('tfd_url');
+    $filters['url'] = new Twig_Filter_Function('TFD_url');
     $filters['t'] = new Twig_Filter_Function('t');
     $filters['ucfirst'] = new Twig_Filter_Function('ucfirst');
 
@@ -64,9 +64,9 @@ class TFD_Extension extends Twig_Extension {
     $filters['render'] = new Twig_Filter_Function('render');
     $filters['hide'] = new Twig_Filter_Function('hide');
 
-    $filters['image_url'] = new Twig_Filter_Function('tfd_image_url');
-    $filters['image_size'] = new Twig_Filter_Function('tfd_image_size');
-    $filters['date_format'] = new Twig_Filter_Function('tfd_date_format_filter');
+    $filters['image_url'] = new Twig_Filter_Function('TFD_image_url');
+    $filters['image_size'] = new Twig_Filter_Function('TFD_image_size');
+    $filters['date_format'] = new Twig_Filter_Function('TFD_date_format_filter');
 
     // RB Backwards compatible with old twig for drupal templates
     $filters['imagecache_url'] = $filters['image_url'];
@@ -88,7 +88,7 @@ class TFD_Extension extends Twig_Extension {
 
   public function getTests() {
     $ret = array();
-    $ret['property'] = new Twig_Test_Function('tfd_property_test');
+    $ret['property'] = new Twig_Test_Function('TFD_property_test');
     return $ret;
   }
 
@@ -111,16 +111,16 @@ class TFD_Extension extends Twig_Extension {
  * @param  $repl
  * @return mixed
  */
-function tfd_str_replace($haystack, $needle, $repl) {
+function TFD_str_replace($haystack, $needle, $repl) {
   return str_replace($needle, $repl, $haystack);
 }
 
-function tfd_re_replace($haystack, $needle, $repl) {
+function TFD_re_replace($haystack, $needle, $repl) {
   return preg_replace($needle, $repl, $haystack);
 }
 
 
-function tfd_date_format_filter($timestamp, $format = '%d-%m-%Y %H:%M', $mode = 'strftime') {
+function TFD_date_format_filter($timestamp, $format = '%d-%m-%Y %H:%M', $mode = 'strftime') {
   switch ($mode) {
     case 'strftime':
     case 'date':
@@ -132,7 +132,7 @@ function tfd_date_format_filter($timestamp, $format = '%d-%m-%Y %H:%M', $mode = 
 }
 
 
-function tfd_defaults_filter($value, $defaults = NULL) {
+function TFD_defaults_filter($value, $defaults = NULL) {
   $args = func_get_args();
   $args = array_filter($args);
   if (count($args)) {
@@ -144,7 +144,7 @@ function tfd_defaults_filter($value, $defaults = NULL) {
 }
 
 
-function tfd_dump($env, $var = NULL, $function = NULL) {
+function TFD_dump($env, $var = NULL, $function = NULL) {
 
 
   static $functions = array('dpr' => NULL, 'dpm' => NULL, 'print_r' => 'p', 'var_dump' => 'v');
@@ -167,7 +167,7 @@ function tfd_dump($env, $var = NULL, $function = NULL) {
 }
 
 
-function tfd_image_url($filepath, $preset = NULL) {
+function TFD_image_url($filepath, $preset = NULL) {
   if (is_array($filepath)) {
     $filepath = $filepath['filepath'];
   }
@@ -180,7 +180,7 @@ function tfd_image_url($filepath, $preset = NULL) {
 }
 
 
-function tfd_image_size($filepath, $preset, $asHtml = TRUE) {
+function TFD_image_size($filepath, $preset, $asHtml = TRUE) {
   if (is_array($filepath)) {
     $filepath = $filepath['filepath'];
   }
@@ -195,7 +195,7 @@ function tfd_image_size($filepath, $preset, $asHtml = TRUE) {
 }
 
 
-function tfd_url($item, $options = array()) {
+function TFD_url($item, $options = array()) {
   if (is_numeric($item)) {
     $ret = url('node/' . $item, (array) $options);
   }
@@ -206,6 +206,6 @@ function tfd_url($item, $options = array()) {
 }
 
 
-function tfd_property_test($element, $propertyName, $value = TRUE) {
+function TFD_property_test($element, $propertyName, $value = TRUE) {
   return array_key_exists("#$propertyName", $element) && $element["#$propertyName"] == $value;
 }
