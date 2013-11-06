@@ -267,6 +267,7 @@ class PantheonApacheSolrService implements DrupalApacheSolrServiceInterface{
      '@deletes_total' => '',
      '@schema_version' => '',
      '@core_name' => '',
+     '@index_size' => '',
     );
 
     if (!empty($stats)) {
@@ -286,6 +287,8 @@ class PantheonApacheSolrService implements DrupalApacheSolrServiceInterface{
       $summary['@schema_version'] = trim($schema[0]);;
       $core = $stats->xpath('/solr/core[1]');
       $summary['@core_name'] = trim($core[0]);
+      $size_xpath = $stats->xpath('//stat[@name="indexSize"]');
+      $summary['@index_size'] = trim(current($size_xpath));
     }
 
     return $summary;
@@ -331,11 +334,7 @@ class PantheonApacheSolrService implements DrupalApacheSolrServiceInterface{
     // Pantheon-specific URL settings.
     // Note: we don't pass a port at this time, because the parent This data
     // is added later in the _makeHttpRequest() method.
-    // TODO: get $host from variable_get('pantheon_hyperion_host', 'index.live.getpantheon.com')
-    $host = variable_get('pantheon_hyperion_host', FALSE);
-    if (!$host) {
-      $host = 'index.'. variable_get('pantheon_tier', 'live') .'.getpantheon.com';
-    }
+    $host = variable_get('pantheon_index_host', 'index.'. variable_get('pantheon_tier', 'live') .'.getpantheon.com');
     $path = 'sites/self/environments/'. variable_get('pantheon_environment', 'dev') .'/index';
     $url = 'https://'. $host .'/'. $path;
 
@@ -449,7 +448,7 @@ class PantheonApacheSolrService implements DrupalApacheSolrServiceInterface{
     // $result = drupal_http_request($url, $headers, $method, $content);
     static $ch;
     $client_cert = '../certs/binding.pem';
-    $port = 449;
+    $port = variable_get('pantheon_index_port', 449);
 
     if (!isset($ch)) {
       $ch = curl_init();
@@ -888,5 +887,20 @@ class PantheonApacheSolrService implements DrupalApacheSolrServiceInterface{
     else {
       throw new Exception("Unsupported method '$method' for search(), use GET or POST");
     }
+  }
+  
+  /**
+   * Get the current solr version.
+   *
+   * @return int
+   *   Does not give a more detailed version; if needed use $system_info.
+   */
+  public function getSolrVersion() {
+    $system_info = $this->getSystemInfo();
+    // Get the solr version number.
+    if (isset($system_info->lucene->{'solr-spec-version'})) {
+      return $system_info->lucene->{'solr-spec-version'}[0];
+    }
+    return 0;
   }
 }
